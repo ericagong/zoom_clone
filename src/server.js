@@ -26,11 +26,21 @@ const server = http.createServer(app);
 // 2. create websocket server on top of http server.
 const wss = new WebSocket.Server({ server });
 
-const handleConnection = (socket) => {
-  console.log(socket); // socket : connection between FE - BE
-};
-
-wss.on("connection", handleConnection);
+wss.on("connection", (socket) => {
+  // In here, socket means connection to FE.
+  console.log("Connected to Browser ✅");
+  socket.send("Hello, this is Server✋");
+  socket.on("message", (message) => {
+    console.log(
+      "📥 New Message: ",
+      message.toString("utf-8"),
+      " from the browser"
+    );
+  });
+  socket.on("close", () => {
+    console.log("Disconnected from the Browser ❌");
+  });
+});
 
 // 3. run http, ws server on the same port.
 server.listen(3000, handleListen);
