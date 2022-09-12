@@ -26,5 +26,11 @@ const server = http.createServer(app);
 // 2. create websocket server on top of http server.
 const wss = new WebSocket.Server({ server });
 
+const handleConnection = (socket) => {
+  console.log(socket); // socket : connection between FE - BE
+};
+
+wss.on("connection", handleConnection);
+
 // 3. run http, ws server on the same port.
 server.listen(3000, handleListen);
