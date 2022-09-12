@@ -26,17 +26,26 @@ const server = http.createServer(app);
 // 2. create websocket server on top of http server.
 const wss = new WebSocket.Server({ server });
 
+// fake Database for saving all connected sockets.
+const sockets = [];
+
 wss.on("connection", (socket) => {
   // In here, socket means connection to FE.
   console.log("Connected to Browser ✅");
+  // add socket when connected
+  sockets.push(socket);
   socket.send("Hello, this is Server✋");
+
   socket.on("message", (message) => {
-    console.log(
-      "📥 New Message: ",
-      message.toString("utf-8"),
-      " from the browser"
-    );
+    // console.log(
+    //   "📥 New Message: ",
+    //   message.toString("utf-8"),
+    //   " from the browser"
+    // );
+    // send messages to all connected browsers.
+    sockets.forEach((aSocket) => aSocket.send(message.toString("utf-8")));
   });
+
   socket.on("close", () => {
     console.log("Disconnected from the Browser ❌");
   });
