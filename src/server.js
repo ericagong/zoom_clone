@@ -35,7 +35,8 @@ wss.on("connection", (socket) => {
   // add socket when connected
   sockets.push(socket);
   socket.send("Hello, this is Server✋");
-
+  // set nickname for connected FE.
+  socket["nickname"] = "Ananoymous";
   socket.on("message", (message) => {
     // console.log(
     //   "📥 New Message: ",
@@ -43,7 +44,20 @@ wss.on("connection", (socket) => {
     //   " from the browser"
     // );
     // send messages to all connected browsers.
-    sockets.forEach((aSocket) => aSocket.send(message.toString("utf-8")));
+    const parsed = JSON.parse(message);
+    switch (parsed.type) {
+      case "message":
+        sockets.forEach((aSocket) =>
+          aSocket.send(
+            `${socket.nickname} : ${parsed.payload.toString("utf-8")}`
+          )
+        );
+        break;
+      case "nickname":
+        // set nickname for connected FE
+        socket["nickname"] = parsed.payload;
+        break;
+    }
   });
 
   socket.on("close", () => {
