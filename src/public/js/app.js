@@ -27,6 +27,9 @@ const handleMessageSubmit = (event) => {
   event.preventDefault();
   const input = messageForm.querySelector("input");
   socket.send(createMessage("message", input.value));
+  // const li = document.createElement("li");
+  // li.innerText = `You: ${input.value}`;
+  // messageList.appendChild(li);
   input.value = "";
 };
 
